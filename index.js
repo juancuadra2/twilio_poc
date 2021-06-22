@@ -8,6 +8,13 @@ const app = express();
 
 app.use(express.json());
 
+app.get('/', (req, res) => {
+    res.json({
+        ok: true,
+        mensaje: "Prueba"
+    });
+})
+
 app.post('/voice', twilio.webhook(), (req, res) => {
     const twiml = new VoiceResponse();
 
