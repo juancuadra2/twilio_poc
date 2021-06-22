@@ -10,17 +10,15 @@ app.use(express.json());
 
 app.post('/voice', twilio.webhook(), (req, res) => {
     // Twilio Voice URL - receives incoming calls from Twilio
+    console.log(req.body);
+    const response = new VoiceResponse();
 
-    const gather = response.gather({
-        input: 'speech',
-        action: '/completed'
-    });
-
-    gather.say('Welcome to Twilio, please tell us why you are calling');
+    response.say(
+        `Hello, how are you?`
+    );
 
     res.set('Content-Type', 'text/xml');
     res.send(response.toString());
-
 });
 
 app.post('/message', twilio.webhook(), (req, res) => {
