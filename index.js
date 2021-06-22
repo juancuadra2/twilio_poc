@@ -9,24 +9,25 @@ const app = express();
 app.use(express.json());
 
 app.post('/voice', twilio.webhook(), (req, res) => {
-    // Twilio Voice URL - receives incoming calls from Twilio
-    console.log(req.body);
-    const response = new VoiceResponse();
+    const twiml = new VoiceResponse();
 
-    response.say(
-        `Hello, how are you?`
-    );
+    // Use the <Gather> verb to collect user input
+    const gather = twiml.gather({ numDigits: 1 });
+    gather.say('For sales, press 1. For support, press 2.');
 
-    res.set('Content-Type', 'text/xml');
-    res.send(response.toString());
+    // If the user doesn't enter input, loop
+    twiml.redirect('/voice');
+
+    // Render the response as XML in reply to the webhook request
+    response.type('text/xml');
+    response.send(twiml.toString());
 });
 
 app.post('/message', twilio.webhook(), (req, res) => {
     // Twilio Messaging URL - receives incoming messages from Twilio
     const response = new MessagingResponse();
 
-    response.message(`Your text to me was ${req.body.Body.length} characters long.
-                    Webhooks are neat :)`);
+    response.message(`Your text to me was ${req.body.Body.length} characters long.Webhooks are neat :)`);
 
     res.set('Content-Type', 'text/xml');
     res.send(response.toString());
