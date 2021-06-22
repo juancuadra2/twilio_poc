@@ -9,31 +9,31 @@ const app = express();
 app.use(express.json());
 
 app.post('/voice', twilio.webhook(), (req, res) => {
-  // Twilio Voice URL - receives incoming calls from Twilio
-  console.log(req.body);
-  const response = new VoiceResponse();
+    // Twilio Voice URL - receives incoming calls from Twilio
 
-  response.say(
-    `Thanks for calling!
-     Your phone number is ${req.body.From}. I got your call because of Twilio´s
-     webhook. Goodbye!`
-  );
+    const gather = response.gather({
+        input: 'speech',
+        action: '/completed'
+    });
 
-  res.set('Content-Type', 'text/xml');
-  res.send(response.toString());
+    gather.say('Welcome to Twilio, please tell us why you are calling');
+
+    res.set('Content-Type', 'text/xml');
+    res.send(response.toString());
+
 });
 
 app.post('/message', twilio.webhook(), (req, res) => {
-  // Twilio Messaging URL - receives incoming messages from Twilio
-  const response = new MessagingResponse();
+    // Twilio Messaging URL - receives incoming messages from Twilio
+    const response = new MessagingResponse();
 
-  response.message(`Your text to me was ${req.body.Body.length} characters long.
+    response.message(`Your text to me was ${req.body.Body.length} characters long.
                     Webhooks are neat :)`);
 
-  res.set('Content-Type', 'text/xml');
-  res.send(response.toString());
+    res.set('Content-Type', 'text/xml');
+    res.send(response.toString());
 });
 
 app.listen(process.env.PORT, () => {
-    console.log('Escuchando en el puerto '+process.env.PORT);
+    console.log('Escuchando en el puerto ' + process.env.PORT);
 });
